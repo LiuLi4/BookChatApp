@@ -1,6 +1,6 @@
 {
-    "name" : "BookChat",
-    "appid" : "__UNI__8FAB29C",
+    "name" : "StoryBookHouse",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.7.0",
     "versionCode" : 170,
@@ -90,7 +90,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx3485915f4bdab8fb",
+        "appid" : "wx1d0c3009e0750241",
         "setting" : {
             "urlCheck" : false,
             "es6" : false

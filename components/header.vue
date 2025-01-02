@@ -54,7 +54,7 @@
 		props: {
 			title: {
 				type: String,
-				default: 'BookChat'
+				default: '儿童绘本故事屋'
 			},
 			showIcon: {
 				type: Boolean,

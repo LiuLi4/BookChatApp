@@ -80,21 +80,19 @@
 			"style": {
 				"enablePullDownRefresh": true
 			}
+		}, {
+			"path": "pages/bind/bind",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/bind/bind",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"tabBar": {
 		"list": [{
 				"pagePath": "pages/index/index",
-				"text": "首页",
+				"text": "书屋",
 				"iconPath": "static/images/home.png",
 				"selectedIconPath": "static/images/home-selected.png"
 			},
@@ -117,9 +115,10 @@
 				"selectedIconPath": "static/images/me-selected.png"
 			}
 		],
-		"backgroundColor": "#ffffff",
-		"color": "#888888",
-		"selectedColor": "#1aad19"
+		"backgroundColor": "#FFFAF0",
+		"color": "#A68BFF",
+		"selectedColor": "#FF69B4",
+		"borderStyle": "white"
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

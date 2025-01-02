@@ -1,7 +1,11 @@
 <template>
 	<view class="page">
-		<iheader :title="book.book_name"></iheader>
+		<iheader :title="book.name"></iheader>
+		<view>
+			<books :booklist="list" v-show="loadingtype === ''"></books>
+		</view>
 		<view @click='pageClick' :class='"bg-theme"+setting.themeIndex' :style='"min-height:"+(sys.screenHeight - sys.statusBarHeight - 55)+"px"'>
+			
 			<view :class='"markdown-body editormd-preview-container bg-theme"+setting.themeIndex' :style='"line-height:1.8;font-size:"+fontIndexs[setting.fontIndex]'>
 				<view class='title font-lv1 text-center'>{{article.title}}</view>
 				<block v-for="(node, idx) of nodes" :key='idx'>
@@ -132,16 +136,22 @@
 	import imenu from '../../components/menu.vue'
 	import iheader from '../../components/header.vue'
 	import imtAudio from '../../components/imt-audio.vue'
+	import books from '../../components/books/books.vue'
 
 	export default {
 		components: {
 			imenu,
 			iheader,
 			imtAudio,
+			books
 		},
 		data() {
 			return {
+				list: [
+					'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223346238908522172233462389072678_6.jpeg'
+				],
 				book: {},
+				book_id: {},
 				article: {},
 				menuSortIds: [],
 				nodes: [],
@@ -195,23 +205,17 @@
 
 			that.initReaderSetting()
 			let latestReadId = 0
-			Promise.all([util.request(config.api.bookMenu, {
-				identify: arr[0]
-			}), util.request(config.api.bookInfo, {
-				identify: arr[0]
-			})]).then(function([resMenu, resBook]) {
-				if (config.debug) console.log(resMenu, resBook)
-				if (resMenu.data && resMenu.data.menu) {
-					menu = resMenu.data.menu
-				}
-				if (resMenu.data && resMenu.data.latest_read_id) {
-					latestReadId = resMenu.data.latest_read_id
-				}
-				if (resBook.data && resBook.data.book) {
-					book = resBook.data.book
-					book.score_float = Number(book.score / 10).toFixed(1)
-					book.is_read = 1
-					book.percent = Number(book.cnt_readed / book.cnt_doc * 100).toFixed(2)
+			Promise.all([
+			util.request(config.api.bookInfo, {
+				book_id: options.id
+			}, 'POST')]).then(function([resBook]) {
+				if (config.debug) console.log(resBook)
+				if (resBook.data) {
+					book = resBook.data
+					console.log(book)
+					// book.score_float = Number(book.score / 10).toFixed(1)
+					// book.is_read = 1
+					// book.percent = Number(book.cnt_readed / book.cnt_doc * 100).toFixed(2)
 				}
 			}).catch(function(e) {
 				console.log(e)

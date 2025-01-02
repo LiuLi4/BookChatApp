@@ -32,7 +32,7 @@
 			},
 			placeholder: {
 				type: String,
-				default: 'Search...'
+				default: '搜索绘本'
 			}
 		},
 		created() {

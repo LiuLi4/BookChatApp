@@ -1,51 +1,47 @@
 <template>
-	<view class="root">
+	<view class="root fairy-tale-theme">
 		<iheader :showIcon="false" :showSearch="showHeaderSearch"></iheader>
 		<view v-if="showSearch" class="base-padding mgb-30">
 			<search target="/pages/search/search" />
 		</view>
 
-		<view v-if="banners.length>0" class="base-padding base-margin-bottom">
-			<swiper :style="'height:'+bannerHeight" :autoplay="autoplay" :indicator-dots="indicatorDots"
-				:interval="interval" :duration="duration">
-				<swiper-item v-for="banner in banners" :key="banner.id" class="radius-basic">
+		<!-- 横幅轮播 -->
+		<view v-if="banners.length > 0" class="base-padding base-margin-bottom">
+			<swiper :style="'height:' + bannerHeight" :autoplay="autoplay" :indicator-dots="indicatorDots"
+				:interval="interval" :duration="duration" class="swiper-container">
+				<swiper-item v-for="banner in banners" :key="banner.id" class="radius-basic banner-item">
 					<image @click="bannerClick" :data-url="banner.link" :src="banner.image"
-						:style="'height:'+bannerHeight+';width:'+bannerWidth+';min-width:100%;max-width:100%'"></image>
+						:style="'height:' + bannerHeight + ';width:' + bannerWidth + ';min-width:100%;max-width:100%'"
+						class="banner-image" />
 				</swiper-item>
 			</swiper>
 		</view>
 
-		<!--  推荐  -->
-		<view v-if="recommendBooks.length>0" class='panel base-padding recommend base-margin-bottom'>
-			<view class='panel-heading'>
-				<view class='panel-title font-lv1 strong'>
-					<text>最新推荐</text>
+		<!-- 推荐图书 -->
+		<view v-if="recommendBooks.length > 0" class="panel base-padding recommend base-margin-bottom">
+			<view class="panel-heading">
+				<view class="panel-title font-lv1 strong">
+					<text class="title-text">🌟 最新推荐 🌟</text>
 					<navigator class="history-link color-grey" url="/pages/history/history">最近阅读</navigator>
 				</view>
 			</view>
-			<view class='panel-body'>
+			<view class="panel-body">
 				<scroll-book :books="recommendBooks" :width="bannerWidth"></scroll-book>
 			</view>
 		</view>
 
-		<!-- showAd: 内容加载完成再显示广告，避免广告先于内容显示 -->
-		<!-- #ifdef MP-WEIXIN -->
-		<view v-if="showAd && !adClosed" :class="['base-padding', adLoaded ? 'base-margin-bottom': '']">
-			<ad @close="adClose" @load="adLoad" :unit-id="bannerAdUnitId" ad-intervals="30"></ad>
-		</view>
-		<!-- #endif -->
-
-
-		<!--  各种分类的书籍的展示  -->
+		<!-- 各分类书籍 -->
 		<block v-for="category in categoryBooks" :key="category.id">
-			<view v-if="category.books" class='panel base-padding base-margin-bottom'>
-				<view class='panel-heading'>
-					<view class='panel-title font-lv1 strong'>{{category.title}}
-						<navigator :url="'/pages/list/list?tab=new&cid='+category.id"
-							class='pull-right color-link font-lv3'>更多</navigator>
+			<view v-if="category.books" class="panel base-padding base-margin-bottom">
+				<view class="panel-heading">
+					<view class="panel-title font-lv1 strong">
+						{{ category.name }}
+						<navigator :url="'/pages/list/list?tab=new&cid=' + category.id" class="pull-right color-link font-lv3">
+							更多
+						</navigator>
 					</view>
 				</view>
-				<view class='panel-body'>
+				<view class="panel-body fairy-panel">
 					<list-book :books="category.books" />
 				</view>
 			</view>
@@ -85,7 +81,7 @@
 				banners: [],
 				categoryBooks: [],
 				recommendBooks: [],
-				times: 100, // 当iOS未允许访问网络的时候，每3秒请求一次数据
+				times: 1000, // 当iOS未允许访问网络的时候，每3秒请求一次数据
 				platform: '',
 				bannerAdUnitId: config.bannerAdUnitId,
 				showAd: false,
@@ -141,7 +137,7 @@
 				api.getCategories().then(function(res) {
 					if (res.length > 0) {
 						categories = res.filter(function(category) {
-							let b = category.pid == 0 && category.cnt > 0
+							let b = category.id != '' && category.name != ''
 							if (b) cids.push(category.id)
 							return b
 						})
@@ -154,18 +150,16 @@
 					let recommendBooks = []
 					Promise.all([util.request(config.api.banners), util.request(config.api.bookLists, {
 						page: 1,
-						size: 12,
+						size: 10,
 						sort: 'latest-recommend'
-					}), util.request(config.api.bookListsByCids, {
+					}, 'POST'), util.request(config.api.bookListsByCids, {
 						page: 1,
 						size: 5,
-						sort: 'new',
-						cids: cids.join(',')
-					})]).then(function([resBanners, resRecommendBooks, resBookLists]) {
+						cids: cids
+					}, 'POST')]).then(function([resBanners, resRecommendBooks, resBookLists]) {
 						if (config.debug) console.log(cids, resBanners, resRecommendBooks, resBookLists)
 						if (resBanners.data && resBanners.data.banners) {
 							banners = resBanners.data.banners
-
 							// 计算横幅合适的宽高
 							// 转成 upx，因为两边边距设置为 30upx
 							let bannerRatio = resBanners.data.size || 2.619
@@ -178,12 +172,12 @@
 							that.bannerHeight = height / info.pixelRatio + "px"
 							that.bannerRatio = bannerRatio
 						}
-						if (resRecommendBooks.data && resRecommendBooks.data.books) recommendBooks =
-							resRecommendBooks.data.books
-						if (resBookLists.data && resBookLists.data.books) {
-							bookLists = resBookLists.data.books
+						if (resRecommendBooks.data) recommendBooks =
+							resRecommendBooks.data
+						if (resBookLists.data) {
+							bookLists = resBookLists.data
 							categories = categories.map(function(category) {
-								let book = resBookLists.data.books[category.id]
+								let book = bookLists[category.id].books
 								if (book != undefined && book.length > 0) {
 									category.books = book
 								} else {
@@ -195,7 +189,8 @@
 					}).catch(function(e) {
 						console.log(e)
 						util.toastError(e.data.message || e.errMsg)
-					}).finally(function() {
+					})
+					.finally(function() {
 						uni.hideLoading()
 						if (that.times > 0 && bookLists.length == 0) {
 							if (config.debug) console.log("reload")
@@ -244,14 +239,78 @@
 </script>
 
 <style>
-	.ios-platform {
-		color: transparent;
-		height: 1upx;
-		overflow: hidden;
-	}
+/* 页面整体背景色调整为渐变色 */
+.root.fairy-tale-theme {
+	background: linear-gradient(to bottom, #fce8f3, #fff5d1);
+	color: #4a4a4a;
+	font-family: "Comic Sans MS", cursive, sans-serif; /* 使用手写风格字体 */
+}
 
-	.history-link {
-		display: inline-block;
-		margin-left: 30px;
+/* 横幅轮播样式 */
+.swiper-container {
+	border-radius: 12px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.banner-item {
+	position: relative;
+}
+
+.banner-image {
+	border-radius: 8px;
+	animation: fadeIn 1s ease-in-out;
+}
+
+/* 推荐图书标题装饰 */
+.panel-heading {
+	position: relative;
+	background: url('/static/images/header-stars.png') no-repeat left center;
+	background-size: contain;
+	padding: 10px 15px;
+}
+
+/* 分类面板装饰 */
+.fairy-panel {
+	background: url('/static/images/panel-background.png') repeat;
+	border-radius: 10px;
+	padding: 15px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 卡通化按钮链接 */
+.color-link {
+	color: #ff7b9c;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+/* 轻微动画 */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
 	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* IOS平台标志 */
+.ios-platform {
+	color: transparent;
+	height: 1upx;
+	overflow: hidden;
+}
+
+/* 最近阅读样式 */
+.history-link {
+	display: inline-block;
+	margin-left: 30px;
+	background: #ffdeeb;
+	padding: 5px 10px;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #4a4a4a;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 </style>
+

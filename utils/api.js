@@ -29,7 +29,7 @@ const getCategories = () => {
     } else {
       if (config.debug) console.log("从接口获取数据");
       util.request(config.api.categories).then(function(res) {
-        let tree = util.menuToTree(res.data.categories)
+        let tree = util.menuToTree(res.data)
         uni.setStorageSync(keyCategories, JSON.stringify(tree))
         uni.setStorageSync(keyCacheExpire, now + expire)
         resolve(tree)

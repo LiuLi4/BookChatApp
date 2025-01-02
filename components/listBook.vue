@@ -2,11 +2,11 @@
 	<view class='book-list'>
 		<block v-for="(book,index) in showBooks" :key='index'>
 			<view class='row'>
-				<navigator :url="'/pages/intro/intro?id='+book.book_id" class='col-3'>
-					<image :lazy-load='true' class='box-shadow cover' :src='book.cover' />
+				<navigator :url="'/pages/read/read?id='+book.id" class='col-3'>
+					<image :lazy-load='true' class='box-shadow cover' :src='book.image_url' />
 				</navigator>
-				<navigator :url="'/pages/intro/intro?id='+book.book_id" class='col-9'>
-					<view class='font-lv1 mgb-15 ellipsis-1row'>{{book.book_name}}</view>
+				<navigator :url="'/pages/read/read?id='+book.id" class='col-9'>
+					<view class='font-lv1 mgb-15 ellipsis-1row'>{{book.name}}</view>
 					<view class='font-lv4 color-light info'>
 						<view class='col'>
 							<image src='/static/images/eye.png'></image>
@@ -18,10 +18,10 @@
 						</view>
 						<view class='col'>
 							<image src='/static/images/clock.png'></image>
-							<text>{{book.created_at}}</text>
+							<text>{{book.create_time}}</text>
 						</view>
 					</view>
-					<view class='font-lv3 color-grey ellipsis-2row'>{{book.description ? book.description : book.book_name}}</view>
+					<view class='font-lv3 color-grey ellipsis-2row'>{{book.description ? book.description : book.name}}</view>
 				</navigator>
 			</view>
 		</block>

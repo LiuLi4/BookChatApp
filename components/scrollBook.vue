@@ -1,10 +1,10 @@
 <template>
 	<scroll-view scroll-x>
 	  <view class='hor' :style="'width:'+width">
-		<block v-for="book in books" :key='book.book_id'>
-		  <navigator :url="'/pages/intro/intro?id='+ book.book_id">
-			<image class='box-shadow cover' :src='book.cover' />
-			<view class='font-lv3 ellipsis-2row mgt-15'>{{book.book_name}}</view>
+		<block v-for="book in books" :key='book.id'>
+		  <navigator :url="'/pages/intro/intro?id='+ book.id">
+			<image class='box-shadow cover' :src='book.image_url' />
+			<view class='font-lv3 ellipsis-2row mgt-15'>{{book.name}}</view>
 		  </navigator>
 		</block>
 	  </view>

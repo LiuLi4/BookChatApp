@@ -159,8 +159,6 @@ const request = (api, params = {}, method = "GET", header = {}) => {
 			header["content-type"] = "application/json"
 		}
 
-		if (method.toUpperCase() == 'POST') header["content-type"] = "application/x-www-form-urlencoded"
-
 		let token = getToken()
 		if (token) header['authorization'] = token
 		
