@@ -148,8 +148,9 @@
 								code: res.code,
 								userInfo: weUser.rawData,
 							}, 'POST').then(function(res) { // 登录成功
-								let user = res.data.user
-								if (user == undefined || user.uid <= 0 || user.token == '') {
+								console.log(res)
+								let user = res.data
+								if (user == undefined || user.id <= 0 || user.oprnid == '') {
 									util.toastError('登录失败：未知错误')
 									that.loadingWechat = false
 									return

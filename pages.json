@@ -8,6 +8,8 @@
 		}, {
 			"path": "pages/read/read"
 		}, {
+			"path": "pages/read/book"
+		}, {
 			"path": "pages/menu/menu",
 			"style": {}
 		}, {
@@ -87,6 +89,13 @@
 				"enablePullDownRefresh": false
 			}
 
+		},
+		{
+			"path" : "pages/books/books",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"tabBar": {

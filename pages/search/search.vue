@@ -69,12 +69,8 @@
 				focus: false,
 				loading: false,
 				tabs: [{
-						title: "书籍",
+						title: "英文绘本",
 						value: "book"
-					},
-					{
-						title: "文档",
-						value: "doc"
 					}
 				]
 			}

@@ -91,4 +91,6 @@
 <style>
 	/*每个页面公共css */
 	@import url("static/css/bookchat.css");
+	/*音乐播放器样式*/
+	@import url("static/css/main.css");
 </style>

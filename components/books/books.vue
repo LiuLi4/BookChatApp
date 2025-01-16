@@ -1,130 +1,75 @@
 <template>
-
 	<view class="wrapper" @touchstart="start" @touchend="end">
-
 		<view class="content">
-
 			<!-- 左侧翻页逻辑 -->
-
-			<template>
-
-				<!-- 正常的当前左侧 -->
-
-				<view class="left" :class="{ animate: direction == 'backoff' && !animateStatic }"
-					:style="{ zIndex: direction == 'backoff' && !animateStatic ? 4 : 3 }"
-					style="backface-visibility: hidden;">
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 正常的当前左侧 -->
+			<view class="left" :class="{ animate: direction == 'backoff' && !animateStatic }"
+				:style="{ zIndex: direction == 'backoff' && !animateStatic ? 4 : 3 }"
+				style="backface-visibility: hidden;">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i" :booklist="booklist"></activecomponent>
 				</view>
+			</view>
 
-				<!-- 左侧背面 -->
-
-				<view class="left left-hide" :class="{ animate: direction == 'backoff' && !animateStatic }" :style="{
-            zIndex: direction == 'backoff' && !reading && !animateStatic ? 4 : 2
-          }">
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i - 1" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 左侧背面 -->
+			<view class="left left-hide" :class="{ animate: direction == 'backoff' && !animateStatic }"
+				:style="{ zIndex: direction == 'backoff' && !reading && !animateStatic ? 4 : 2 }">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i - 1" :booklist="booklist"></activecomponent>
 				</view>
+			</view>
 
-				<!-- 上一页 -->
-
-				<view class="left left-next" :style="{ zIndex: direction == 'backoff' ? 2 : 1 }">
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i - 1" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 上一页 -->
+			<view class="left left-next" :style="{ zIndex: direction == 'backoff' ? 2 : 1 }">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i - 1" :booklist="booklist"></activecomponent>
 				</view>
-
-			</template>
+			</view>
 
 			<!-- 右侧翻页逻辑 -->
-
-			<template>
-
-				<!-- 正常的右侧 -->
-
-				<view class=" right " :class="{ animateRight: direction == 'forward' && !animateStatic }"
-					style="backface-visibility: hidden;"
-					:style="{ zIndex: direction == 'forward' && !animateStatic ? 4 : 3 }" v-show="rightnormal">
-
-					<!-- 正常的右侧 -->
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 正常的右侧 -->
+			<view class="right" :class="{ animateRight: direction == 'forward' && !animateStatic }"
+				style="backface-visibility: hidden;"
+				:style="{ zIndex: direction == 'forward' && !animateStatic ? 4 : 3 }" v-show="rightnormal">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i" :booklist="booklist"></activecomponent>
 				</view>
+			</view>
 
-				<!-- 背面 -->
-
-				<view class="right  right-hide" :class="{ animateRight: direction == 'forward' && !animateStatic }"
-					:style="{ zIndex: direction == 'forward' && !animateStatic ? 3 : 2 }">
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i + 1" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 背面 -->
+			<view class="right right-hide" :class="{ animateRight: direction == 'forward' && !animateStatic }"
+				:style="{ zIndex: direction == 'forward' && !animateStatic ? 3 : 2 }">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i + 1" :booklist="booklist"></activecomponent>
 				</view>
+			</view>
 
-				<!-- 底层下一页 -->
-
-				<view class="right right-next" :style="{ zIndex: direction == 'forward' ? 2 : 1 }">
-
-					<view class="animate-wrapper">
-
-						<activecomponent @next="next" @pre="pre" :i="i + 1" :booklist="booklist"></activecomponent>
-
-						<!--  #endif -->
-
-					</view>
-
+			<!-- 底层下一页 -->
+			<view class="right right-next" :style="{ zIndex: direction == 'forward' ? 2 : 1 }">
+				<view class="animate-wrapper">
+					<activecomponent @next="next" @pre="pre" :i="i + 1" :booklist="booklist"></activecomponent>
 				</view>
-
-			</template>
-
+			</view>
 		</view>
-
 	</view>
-
 </template>
 
 <script>
 	import activecomponent from './activecomponent'
+	import store from '../../store' // 引入 Vuex store
+
 	export default {
 		props: ['booklist'],
+		store,
 		created() {
 			// this.resetCom()
 		},
 		computed: {
 			platform() {
 				return this.$store.state.platform
+			},
+			bookAuto() {
+				return !this.$store.state.book.auto
 			}
 		},
 		data() {
@@ -132,7 +77,7 @@
 			return {
 				i: 0,
 				lists: [],
-				direction: 'backoff', //forward 前进 backoff 后退
+				direction: 'backoff', // forward 前进 backoff 后退
 				reading: false,
 				animateStatic: true,
 				timer1: null,
@@ -153,12 +98,12 @@
 				return () => {
 					// 关掉小手
 					this.clearTimer()
-					if (this.$store.state.book.auto) {
+					if (this.bookAuto) {
 						this.next()
 						return
 					}
 					this.timer = setTimeout(() => {
-						this.$store.state.book.iscourse = true
+						this.$store.commit('setBookIscourse', true)
 					}, this.$store.state.book.coursetime)
 				}
 			},
@@ -169,7 +114,7 @@
 			clearTimer() {
 				clearTimeout(this.timer)
 				this.timer = null
-				this.$store.state.book.iscourse = false
+				this.$store.commit('setBookIscourse', false)
 			},
 			startReading(type) {
 				if (this.reading && !this.animateStatic) {
@@ -214,10 +159,12 @@
 				// 翻页上一页
 				this.direction = 'backoff'
 				this.startReading('pre')
-				// 播放语音
-				console.log('播放语音')
-				this.$xw.playAudio(this.booklist[this.i - 1].voice_url)
-				// 开始上报
+				if(this.$store.state.playAudio) {
+					// 播放语音
+					console.log('播放语音')
+					this.$xw.playAudio(this.booklist[this.i - 1].voice_url)
+					// 开始上报
+				}
 			},
 			next() {
 				// 以下是翻页逻辑
@@ -243,20 +190,25 @@
 				}
 				this.direction = 'forward'
 				this.startReading('next')
-				// 播放语音
-				this.$xw.playAudio(
-					this.booklist[this.i + 1].voice_url,
-					this.callback && this.callback(),
-					this.errcallback
-				)
-				// 开始上报
+				if(this.$store.state.playAudio) {
+					// 播放语音
+					this.$xw.playAudio(
+						this.booklist[this.i + 1].voice_url,
+						this.callback && this.callback(),
+						this.errcallback
+					)
+					// 开始上报
+				}
 			},
 			bookplay() {
-				this.$xw.playAudio(
-					this.booklist[this.i].voice_url,
-					this.callback && this.callback(),
-					this.errcallback
-				)
+				if(this.$store.state.playAudio) {
+					this.$xw.playAudio(
+						this.booklist[this.i].voice_url,
+						this.callback && this.callback(),
+						this.errcallback
+					)
+				}
+				
 			},
 			// 触摸事件
 			start(e) {
@@ -271,14 +223,14 @@
 				} else {
 					if (subX > this.startData.threshold) {
 						// console.log('右滑')
-						if (this.$store.state.book.auto) {
+						if (this.bookAuto) {
 							this.$xw.Toast('已开启自动播放')
 							return
 						}
 						this.pre()
 					} else if (subX < -this.startData.threshold) {
 						// console.log('左滑')
-						if (this.$store.state.book.auto) {
+						if (this.bookAuto) {
 							this.$xw.Toast('已开启自动播放')
 							return
 						}
@@ -297,25 +249,30 @@
 				handler() {
 					setTimeout(() => {
 						if (!this.booklist[0]) return
-						this.$store.state.book.makequesing = false
-						this.$store.state.book.iscourse = false
-						this.$xw.playAudio(
-							this.booklist[0].voice_url,
-							this.callback && this.callback(),
-							this.errcallback
-						)
+						this.$store.commit('setBookMakequesing', false)
+						this.$store.commit('setBookIscourse', false)
+						if(this.$store.state.playAudio) {
+							this.$xw.playAudio(
+								this.booklist[0].voice_url,
+								this.callback && this.callback(),
+								this.errcallback
+							)
+						}
 						this.question_list = this.booklist[0].question_list
 					}, this.$xw.getbufferTime().buffer)
 				},
-				deep: true, //true 深度监听
-				immediate: true //开启首次监听赋值（不开启首次监听不到）
+				deep: true, // true 深度监听
+				immediate: true // 开启首次监听赋值（不开启首次监听不到）
 			}
 		},
-		destroyed() {
-			// console.log('组件的清理工作')
+		beforeDestroy() {
+			// 使用 beforeDestroy 钩子来替代 destroyed
+			// 清理工作
 			this.callback = null
 			// 通知外面我正在做题
-			this.$store.state.book.makequesing = false
+			if (this.$store) {
+				this.$store.commit('setBookMakequesing', false)
+			}
 		}
 	}
 </script>
@@ -323,109 +280,108 @@
 <style lang="scss" scoped>
 	.wrapper {
 		width: 100vw;
+		height: 60vh;
+		position: relative;
+	}
+
+	.content {
+		width: 100vw;
 		height: 100vh;
 		position: relative;
+		margin: 0;
+		/* 确保外部没有多余的边距 */
+		padding: 0;
+		/* 确保内部没有多余的填充 */
 
-		.content {
-			width: 100vw;
+		.left {
+			width: 50vw;
 			height: 100vh;
-			position: relative;
-
-			.left {
-				width: 50vw;
-				height: 100vh;
-				// background: blue;
-				overflow: hidden;
-				position: absolute;
-				left: 0;
-				top: 0;
-				z-index: 0;
-				transform-style: preserve-3d;
-				transform-origin: right center;
-			}
-
-			.left-hide {
-				.animate-wrapper {
-					transform: translate(100%, 0) scale(-1, 1);
-				}
-			}
-
-			.left-next {
-				.animate-wrapper {
-					transform: translate(0, 0);
-				}
-			}
-
-			.right {
-				transform-style: preserve-3d;
-				position: absolute;
-				right: 0;
-				top: 0;
-				width: 50vw;
-				height: 100vh;
-				overflow: hidden;
-				transform-origin: left center;
-
-				.animate-wrapper {
-					transform: translate(-100%, 0);
-				}
-			}
-
-			.right-hide {
-				.animate-wrapper {
-					transform: translate(0%, 0) scale(-1, 1);
-				}
-			}
-
-			.right-next {
-				.animate-wrapper {
-					transform: translate(-100%, 0);
-				}
-			}
-		}
-
-		.play {
+			overflow: hidden;
 			position: absolute;
-			color: #fff;
-			font-size: r(12);
-			right: r(50);
-			top: r(10);
+			left: 0;
+			top: 0;
+			z-index: 0;
+			transform-style: preserve-3d;
+			transform-origin: right center;
+			margin: 0;
+			/* 防止内容影响顶部对齐 */
 		}
+
+		.left-hide {
+			.animate-wrapper {
+				transform: translate(100%, 0) scale(-1, 1);
+			}
+		}
+
+		.left-next {
+			.animate-wrapper {
+				transform: translate(0, 0);
+			}
+		}
+
+		.right {
+			transform-style: preserve-3d;
+			position: absolute;
+			right: 0;
+			top: 0;
+			width: 50vw;
+			height: 100vh;
+			overflow: hidden;
+			transform-origin: left center;
+			margin: 0;
+			/* 防止内容影响顶部对齐 */
+
+			.animate-wrapper {
+				transform: translate(-100%, 0);
+			}
+		}
+
+		.right-hide {
+			.animate-wrapper {
+				transform: translate(0%, 0) scale(-1, 1);
+			}
+		}
+
+		.right-next {
+			.animate-wrapper {
+				transform: translate(-100%, 0);
+			}
+		}
+	}
+
+	.play {
+		position: absolute;
+		color: #fff;
+		font-size: r(12);
+		right: r(50);
+		// top: r(10);
 	}
 
 	@keyframes rotate {
 		0% {
 			transform: rotateY(0deg);
-			// perspective(2000px)
 		}
 
 		100% {
 			transform: rotateY(-180deg);
-			// perspective(2000px)
 		}
 	}
 
 	@keyframes rotateforword {
 		0% {
 			transform: rotateY(0deg);
-			// perspective(2000px)
 		}
 
 		100% {
 			transform: rotateY(180deg);
-			// perspective(2000px)
 		}
 	}
 
 	.animate {
 		animation: rotateforword 1s ease-in-out forwards;
-		// transition: transform 1s;
-		// transform: perspective(1000px) rotateY(180deg);
 	}
 
 	.animateRight {
 		animation: rotate 1s ease-in-out forwards;
-		// transition: transform 1s;
-		// transform: perspective(800px) rotateY(-180deg);
 	}
 </style>

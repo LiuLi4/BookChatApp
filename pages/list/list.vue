@@ -129,14 +129,14 @@
 					cid: that.cid,
 					size: that.size,
 					sort: that.activeTab
-				}).then((res) => {
+				}, 'POST').then((res) => {
 					if (config.debug) console.log(config.api.bookLists, res)
 					let page = 0
 					let books = that.books
 					if (isClearAll) books = []
-					if (res.data != undefined && res.data.books != undefined) {
-						if (res.data.books.length >= that.size) page = that.page + 1
-						books = books.concat(res.data.books)
+					if (res.data != undefined) {
+						if (res.data.length >= that.size) page = that.page + 1
+						books = books.concat(res.data)
 					}
 					let tips = '哼，我也是一只有底线的猿'
 					if (books.length == 0) tips = '(-。-) 猿来没有内容'

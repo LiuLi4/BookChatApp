@@ -2,10 +2,12 @@ import config from '../config.js'
 import util from "./util.js"
 
 const keyCategories = 'categories';
+const allKeyCategories = 'allCategories';
 const keyCacheExpire = 'categories-expire';
+const allKeyCacheExpire = 'allCategories-expire';
 const expire = 1800; // 1800 seconds
 
-// 获取书籍分类
+// 获取书籍序列
 const getCategories = () => {
   if (config.debug) console.log(config.api.categories);
   // 从缓存中读取，判断缓存存不存在，并且有没有过期
@@ -24,7 +26,7 @@ const getCategories = () => {
     }
 
     if (value) {
-      if (config.debug) console.log("从缓存中获取分类数据");
+      if (config.debug) console.log("从缓存中获取序列数据");
       resolve(value);
     } else {
       if (config.debug) console.log("从接口获取数据");
@@ -32,6 +34,41 @@ const getCategories = () => {
         let tree = util.menuToTree(res.data)
         uni.setStorageSync(keyCategories, JSON.stringify(tree))
         uni.setStorageSync(keyCacheExpire, now + expire)
+        resolve(tree)
+      }).catch(function(e) {
+        reject(e)
+      })
+    }
+  });
+}
+
+// 获取书籍分类
+const getAllCategories = () => {
+  if (config.debug) console.log(config.api.allCategories);
+  // 从缓存中读取，判断缓存存不存在，并且有没有过期
+  return new Promise((resolve, reject) => {
+    let allCategories = {};
+    let now = util.now();
+    let value
+    let cacheExpire = parseInt(uni.getStorageSync(allKeyCacheExpire))
+    if (cacheExpire > now) {
+      try {
+        value = uni.getStorageSync(allKeyCategories)
+        if (value) value = JSON.parse(value)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    if (value) {
+      if (config.debug) console.log("从缓存中获取分类数据");
+      resolve(value);
+    } else {
+      if (config.debug) console.log("从接口获取数据");
+      util.request(config.api.allCategories).then(function(res) {
+        let tree = util.menuToTree(res.data)
+        uni.setStorageSync(allKeyCategories, JSON.stringify(tree))
+        uni.setStorageSync(allKeyCacheExpire, now + expire)
         resolve(tree)
       }).catch(function(e) {
         reject(e)
@@ -65,5 +102,6 @@ const getCategoryByCid = (cid) => {
 
 module.exports = {
   getCategories,
+  getAllCategories,
   getCategoryByCid,
 }

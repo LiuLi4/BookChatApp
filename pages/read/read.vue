@@ -1,13 +1,13 @@
 <template>
 	<view class="page">
 		<iheader :title="book.name"></iheader>
-		<view>
-			<books :booklist="list" v-show="loadingtype === ''"></books>
-		</view>
-		<view @click='pageClick' :class='"bg-theme"+setting.themeIndex' :style='"min-height:"+(sys.screenHeight - sys.statusBarHeight - 55)+"px"'>
-			
-			<view :class='"markdown-body editormd-preview-container bg-theme"+setting.themeIndex' :style='"line-height:1.8;font-size:"+fontIndexs[setting.fontIndex]'>
+		<view @click='pageClick' :class='"bg-theme"+setting.themeIndex'
+			:style='"min-height:"+(sys.screenHeight - sys.statusBarHeight - 55)+"px"'>
+			<view :class='"markdown-body editormd-preview-container bg-theme"+setting.themeIndex'
+				:style='"line-height:1.8;font-size:"+fontIndexs[setting.fontIndex]'>
 				<view class='title font-lv1 text-center'>{{article.title}}</view>
+				<!-- <books :booklist="list" v-show="loadingtype === ''"></books> -->
+				<books :booklist="list"></books>
 				<block v-for="(node, idx) of nodes" :key='idx'>
 					<block v-if="node.type == 'img'">
 						<image @click="imgPreview" :src="node['src']" :data-src="node['src']" mode="aspectFit"></image>
@@ -35,8 +35,8 @@
 
 		<view :class='"drawer drawer-left " + [showMenu ? "show":""]'>
 			<view class='drawer-content' :style="'padding-bottom: 70px;'+menuStyle">
-				<imenu :book="book" :currentDocId="article.id" :wd="wd" :menu="menuTree" :result="result" :tips="tips" @search="search"
-				 @clear="clear" @itemClick="itemClick" />
+				<imenu :book="book" :currentDocId="article.id" :wd="wd" :menu="menuTree" :result="result" :tips="tips"
+					@search="search" @clear="clear" @itemClick="itemClick" />
 			</view>
 		</view>
 
@@ -48,8 +48,8 @@
 							<text class='color-grey font-lv4'>屏幕亮度</text>
 						</view>
 						<view class='row setting-screen setting-item '>
-							<slider min='0' max='1' step='0.1' block-size='18' @change="setBrightnessScreen" :value='screenBrightness'
-							 show-value></slider>
+							<slider min='0' max='1' step='0.1' block-size='18' @change="setBrightnessScreen"
+								:value='screenBrightness' show-value></slider>
 						</view>
 					</block>
 
@@ -147,9 +147,7 @@
 		},
 		data() {
 			return {
-				list: [
-					'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223346238908522172233462389072678_6.jpeg'
-				],
+				list: [],
 				book: {},
 				book_id: {},
 				article: {},
@@ -172,7 +170,9 @@
 				},
 				defautScreenBrightness: 0,
 				screenBrightness: 0,
-				fontIndexs: util.getSysInfo().windowWidth >= 768 ? ['15px', '16px', '17px', '18px', '19px', '20px', '21px'] : [
+				fontIndexs: util.getSysInfo().windowWidth >= 768 ? ['15px', '16px', '17px', '18px', '19px', '20px',
+					'21px'
+				] : [
 					'14px', '15px', '16px', '17px', '18px', '19px', '20px'
 				],
 				tips: '',
@@ -182,6 +182,7 @@
 			}
 		},
 		onLoad: function(options) {
+			this.init()
 			// 步骤：
 			// 1. 先获取书籍目录
 			// 2. 如果没传文档标识参数，则用目录的首个章节作为默认获取的文章
@@ -196,7 +197,7 @@
 			// #endif
 
 
-			if (arr.length == 0) {
+			if (options.identify) {
 				uni.redirectTo({
 					url: '/pages/notfound/notfound',
 				})
@@ -206,9 +207,10 @@
 			that.initReaderSetting()
 			let latestReadId = 0
 			Promise.all([
-			util.request(config.api.bookInfo, {
-				book_id: options.id
-			}, 'POST')]).then(function([resBook]) {
+				util.request(config.api.bookInfo, {
+					book_id: options.id
+				}, 'POST')
+			]).then(function([resBook]) {
 				if (config.debug) console.log(resBook)
 				if (resBook.data) {
 					book = resBook.data
@@ -220,12 +222,12 @@
 			}).catch(function(e) {
 				console.log(e)
 			}).finally(function() {
-				if (menu.length == 0) {
-					uni.redirectTo({
-						url: '/pages/notfound/notfound',
-					})
-					return
-				}
+				// if (menu.length == 0) {
+				// 	uni.redirectTo({
+				// 		url: '/pages/notfound/notfound',
+				// 	})
+				// 	return
+				// }
 
 				let menuTree = util.menuToTree(menu)
 				let sysInfo = util.getSysInfo()
@@ -234,13 +236,13 @@
 				that.menuSortIds = util.menuSortIds(menuTree)
 				that.menuTree = menuTree
 				that.book = book
-				if (arr.length != 2) {
-					if (latestReadId > 0) {
-						identify = book.book_id + "/" + latestReadId
-					} else {
-						identify = book.book_id + "/" + menuTree[0].id
-					}
-				}
+				// if (arr.length != 2) {
+				// 	if (latestReadId > 0) {
+				// 		identify = book.book_id + "/" + latestReadId
+				// 	} else {
+				// 		identify = book.book_id + "/" + menuTree[0].id
+				// 	}
+				// }
 
 				if (config.debug) console.log("sys info", util.getSysInfo())
 
@@ -256,6 +258,146 @@
 			})
 		},
 		methods: {
+			getBaseSrc(imageUrl) {
+				return new Promise((resolve, reject) => {
+					try {
+						// 创建一个 Image 对象
+						const img = {};
+						img.crossOrigin = 'Anonymous'; // 允许跨域加载图片
+						img.src = imageUrl;
+
+						// 图片加载完成后执行
+						img.onload = () => {
+							try {
+								// 创建一个 Canvas 元素
+								const canvas = document.createElement('canvas');
+								const context = canvas.getContext('2d');
+
+								// 设置 Canvas 的宽度和高度与图片一致
+								canvas.width = img.width;
+								canvas.height = img.height;
+
+								// 将图片绘制到 Canvas 上
+								context.drawImage(img, 0, 0, img.width, img.height);
+
+								// 将 Canvas 的内容转为 Base64
+								const base64Data = canvas.toDataURL('image/jpeg');
+
+								// 返回原始 URL 和 Base64 数据
+								resolve({
+									image_url: imageUrl,
+									basesrc: base64Data
+								});
+							} catch (error) {
+								reject(error); // 捕获绘制或转换错误
+							}
+						};
+
+						// 图片加载错误时执行
+						img.onerror = (error) => {
+							reject(error); // 捕获加载错误
+						};
+					} catch (error) {
+						reject(error); // 捕获其他潜在错误
+					}
+				});
+			},
+			getBook_init(data) {
+				this.listTotal = data
+				let books = []
+				data.forEach(item => {
+					books.push(...item.content_list)
+				})
+				let that = this
+				let arr = []
+				books.forEach(item => {
+					that.getBaseSrc(item.image_url).then(data => {
+						const {
+							image_url,
+							basesrc
+						} = data
+						arr.push({
+							image_url,
+							basesrc
+						})
+					})
+					return item
+				})
+
+				let timer = () => {
+					setTimeout(() => {
+						if (arr.length !== books.length) {
+							timer()
+						} else {
+							// this.$xw.Toast('温馨提示：未加载出来请退出重试下哦')
+							this.list = books.map(item => {
+								arr.forEach(ar => {
+									if (ar.image_url === item.image_url) {
+										item.image_url = ar.basesrc
+									}
+								})
+								return item
+							})
+							console.log('计算完毕')
+							this.loadingend = true
+							setTimeout(() => {
+								this.showplay = true
+								this.loadingtype = ''
+								// 打开自动播放
+								this.$store.state.book.auto = true
+							}, 1000)
+						}
+					}, 100)
+				}
+				timer()
+			},
+			init() {
+				// 保持亮屏
+				uni.setKeepScreenOn({
+					keepScreenOn: true
+				})
+				this.clear()
+				// ajax返回数据
+				this.loadingtype = 'book'
+				let data = [{
+					content_list: [{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223344579147616172233445791481615_1.jpg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223347561254e8e17223347561263856_sample-3s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223346407579889172233464075786259_7.jpg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/172233479775248d917223347977528717_sample-15s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223345236471907172233452364819194_3.jpeg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223347561254e8e17223347561263856_sample-3s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223345534553e29172233455345554395_4.jpeg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/172233479775248d917223347977528717_sample-15s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223345819354ab2172233458193526264_5.jpeg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223347561254e8e17223347561263856_sample-3s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223346238908522172233462389072678_6.jpeg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/172233479775248d917223347977528717_sample-15s.mp3'
+						},
+						{
+							image_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/17223346407579889172233464075786259_7.jpg',
+							voice_url: 'https://ysys-assets.oss-cn-beijing.aliyuncs.com/public/172233479775248d917223347977528717_sample-15s.mp3'
+						}
+					],
+					create_time: 1606550952,
+					describe: 'C版5-6岁体验课第4节',
+					picture_book_id: 'F436q2EXGc',
+					state: 1,
+					title: '吨吨号上丢失的货箱',
+					update_time: 1608198299
+				}]
+				this.getBook_init(data)
+			},
 			getArticle: function(identify) {
 				util.loading("loading...")
 				let article = {}
@@ -407,7 +549,8 @@
 						success: function(res) {
 							if (res.confirm) {
 								uni.navigateTo({
-									url: '/pages/login/login?redirect=' + encodeURIComponent('/pages/read/read?identify=' + that.book.book_id +
+									url: '/pages/login/login?redirect=' + encodeURIComponent(
+										'/pages/read/read?identify=' + that.book.book_id +
 										'/' + that.article.id),
 								})
 							}
@@ -658,6 +801,7 @@
 	}
 
 	.bg-theme0 {
+		height: 16px;
 		background-color: #fff !important;
 	}
 

@@ -2,10 +2,10 @@
 	<view class='book-list'>
 		<block v-for="(book,index) in showBooks" :key='index'>
 			<view class='row'>
-				<navigator :url="'/pages/read/read?id='+book.id" class='col-3'>
+				<navigator :url="'/pages/read/book?id='+book.id" class='col-3'>
 					<image :lazy-load='true' class='box-shadow cover' :src='book.image_url' />
 				</navigator>
-				<navigator :url="'/pages/read/read?id='+book.id" class='col-9'>
+				<navigator :url="'/pages/read/book?id='+book.id" class='col-9'>
 					<view class='font-lv1 mgb-15 ellipsis-1row'>{{book.name}}</view>
 					<view class='font-lv4 color-light info'>
 						<view class='col'>

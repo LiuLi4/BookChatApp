@@ -5,18 +5,18 @@
 			<block v-for="category in categories" :key='category.id'>
 				<view class='panel' v-if="category.cnt >0 && category.status">
 					<view class='panel-heading'>
-						<view class='font-lv1 strong'>{{category.title}}</view>
+						<view class='font-lv1 strong'>{{category.name}}</view>
 					</view>
 					<view class='row'>
 						<block v-for="child in category.children" :key='child.id'>
-							<navigator :url="'/pages/list/list?cid='+child.id" class='col-6 item' v-if="child.cnt>0 && child.pid==category.id && child.status">
+							<navigator :url="'/pages/list/list?cid='+child.id" class='col-6 item' v-if="child.cnt>0 && child.class_id==category.id && child.status > 0">
 								<view class='row'>
 									<view class='col-4'>
 										<image :lazy-load='true' v-if="child.icon" class='img-responsive' :src='child.icon'></image>
 										<image v-else class='img-responsive' src='/static/images/cate-default.png'></image>
 									</view>
 									<view class='col-8'>
-										<view class='ellipsis-1row font-lv2'>{{child.title}}</view>
+										<view class='ellipsis-1row font-lv2'>{{child.name}}</view>
 										<view class='text-muted font-lv3'>{{child.cnt}} 本</view>
 									</view>
 								</view>
@@ -30,7 +30,7 @@
 			<block v-for="(category, idx) in categories" :key='category.id'>
 				<view class='panel' v-if="category.cnt >0 && category.status">
 					<view class='panel-heading' :id="'index'+idx">
-						<view class='font-lv2 strong'>{{category.title}}</view>
+						<view class='font-lv2 strong'>{{category.name}}</view>
 					</view>
 					<view class='row'>
 						<block v-for="child in category.children" :key='child.id'>
@@ -85,10 +85,12 @@
 			util.loading("loading...")
 			let sysInfo = util.getSysInfo()
 			this.fixTop = (sysInfo.statusBarHeight + sysInfo.titleBarHeight) + "px"
-			api.getCategories().then((categories) => {
-				if (config.debug) console.log('api.getCategories: ', categories);
+			api.getAllCategories().then((categories) => {
+				if (config.debug) console.log('api.getAllCategories: ', categories);
 				categories.map(item => {
-					item.firstWord = String(item.title).substr(0, 1)
+					item.firstWord = String(item.name).substr(0, 1)
+					item.status = item.status > 0
+					item.children = item.series
 					return item
 				})
 				this.categories = categories

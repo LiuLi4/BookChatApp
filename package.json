@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "pinia": "^2.3.0"
+  }
+}

@@ -55,11 +55,15 @@
 					size: that.size
 				}).then(function(res) {
 					if (config.debug) console.log("config.api.historyReadBook", res)
-					if (res.data && res.data.books) {
+					console.log("小朋友，你还没有登录哦")
+					if (res.statusCode != 200) {
+						that.tips = "小朋友，你还没有登录哦~"
+					}
+					if (res.statusCode == 200 && res.data && res.data.books) {
 						let books = that.page == 1 ? [] : that.books
 						let page = that.page
 						if (res.data.books.length == that.size) {
-							page ++
+							page++
 						} else {
 							page = 0
 						}
@@ -71,7 +75,7 @@
 						})
 						that.page = page
 						that.books = books.concat(res.data.books)
-						if (that.books.length == 0) that.tips = "您未登录或者最近没有阅读过相关书籍..."
+						if (that.books.length == 0) that.tips = "小朋友，你最近没有阅读过相关书籍哦~"
 					}
 				}).catch(e => {
 					console.log(e)
