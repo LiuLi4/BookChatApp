@@ -19,12 +19,6 @@
 			}
 		},
 		{
-			"path": "pages/comment/comment",
-			"style": {
-				"navigationBarTitleText": "点评"
-			}
-		},
-		{
 			"path": "pages/reg/reg",
 			"style": {
 				"navigationBarTitleText": "注册"
@@ -40,12 +34,6 @@
 			"path": "pages/list/list",
 			"style": {
 				"navigationBarTitleText": "列表"
-			}
-		},
-		{
-			"path": "pages/cate/cate",
-			"style": {
-				"navigationBarTitleText": "看书"
 			}
 		},
 		{
@@ -91,13 +79,27 @@
 
 		},
 		{
-			"path" : "pages/books/books",
-			"style" : 
-			{
-				"navigationBarTitleText" : ""
+			"path": "pages/books/books",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		}
 	],
+	"subPackages": [{
+		"root": "pages_cate",
+		"pages": [{
+			"path": "pages_cate/cate/cate",
+			"style": {
+				"navigationBarTitleText": "看书"
+			}
+		}]
+	}],
+	"preloadRule": {
+		"pages/index/index": { //要进行预加载时用户要进入的页面路径
+			"network": "all" // 什么网络下支持允许预加载，默认wifi: wifi/all
+			//"packages": ["pages_Index"] // 要进行预加载的子包名
+		}
+	},
 	"tabBar": {
 		"list": [{
 				"pagePath": "pages/index/index",
@@ -106,7 +108,7 @@
 				"selectedIconPath": "static/images/home-selected.png"
 			},
 			{
-				"pagePath": "pages/cate/cate",
+				"pagePath": "pages_cate/cate/cate",
 				"text": "看书",
 				"iconPath": "static/images/cate.png",
 				"selectedIconPath": "static/images/cate-selected.png"

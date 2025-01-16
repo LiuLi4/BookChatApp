@@ -8,7 +8,7 @@
 			</view>
 			<view v-if="user.intro" class='color-grey font-lv3 user-intro'>{{user.intro}}</view>
 		</view>
-		<view v-if="moreInfo.uid>0" class="row col-title font-lv2">
+		<view class="row col-title font-lv2">
 			<view class="col font-lv2">
 				<image class="me-icon" src="/static/images/report.png"></image>
 				<text>我的成就</text>

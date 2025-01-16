@@ -264,7 +264,6 @@
 /* 推荐图书标题装饰 */
 .panel-heading {
 	position: relative;
-	background: url('/static/images/header-stars.png') no-repeat left center;
 	background-size: contain;
 	padding: 10px 15px;
 }
