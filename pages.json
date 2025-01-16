@@ -107,7 +107,7 @@
 			},
 			{
 				"pagePath": "pages/cate/cate",
-				"text": "分类",
+				"text": "看书",
 				"iconPath": "static/images/cate.png",
 				"selectedIconPath": "static/images/cate-selected.png"
 			},
@@ -124,9 +124,10 @@
 				"selectedIconPath": "static/images/me-selected.png"
 			}
 		],
-		"backgroundColor": "#FFFAF0",
-		"color": "#A68BFF",
-		"selectedColor": "#FF69B4",
+		/* 页面整体背景色调整为渐变色 */
+		"backgroundColor": "#ffffff",
+		"color": "#000000",
+		"selectedColor": "#aa0000",
 		"borderStyle": "white"
 	},
 	"globalStyle": {
