@@ -42,7 +42,7 @@
 					<view>我们给了你一个华丽的书架</view>
 					<view>你却没登录...</view>
 					<view class='action'>
-						<button @click='login'>码上登录</button>
+						<button @click='login'>登录</button>
 					</view>
 				</view>
 			</view>

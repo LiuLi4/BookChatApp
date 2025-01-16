@@ -25,7 +25,7 @@
 					<view class='col text-right' @click='findPassword'>忘记密码？</view>
 				</view>
 				<view class='row'>
-					<button class='btn-submit btn-block' :loading='loading' form-type='submit'> 码上登录 </button>
+					<button class='btn-submit btn-block' :loading='loading' form-type='submit'> 登录 </button>
 				</view>
 				<!-- #ifdef MP-WEIXIN -->
 				<view class="row">

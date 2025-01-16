@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<iheader title="分类" :showIcon="false" :showBorder="true" :showSearch="true"></iheader>
+		<iheader title="看书" :showIcon="false" :showBorder="true" :showSearch="true"></iheader>
 		<view class='base-padding layout-grid' v-if="grid">
 			<block v-for="category in categories" :key='category.id'>
 				<view class='panel' v-if="category.cnt >0 && category.status">

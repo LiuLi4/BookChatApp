@@ -80,24 +80,9 @@
 			</navigator>
 		</view>
 		<view class='base-padding row base-info font-lv2'>
-			<navigator :url="user.uid>0 ? '/pages/ucenter/ucenter?tab=release':'/pages/login/login'" class='col-12'>
-				<image class="me-icon" src='../../static/images/book.png'></image>
-				我的发布
-				<image class='pull-right me-icon' src='../../static/images/right-angle.png'></image>
-			</navigator>
 			<navigator :url='user.uid>0?"/pages/ucenter/ucenter?tab=star":"/pages/login/login"' class='col-12'>
 				<image class="me-icon" src='../../static/images/star.png'></image>
 				我的收藏
-				<image class='pull-right me-icon' src='../../static/images/right-angle.png'></image>
-			</navigator>
-			<navigator :url='user.uid>0?"/pages/ucenter/ucenter?tab=follow":"/pages/login/login"' class='col-12'>
-				<image class="me-icon" src='../../static/images/follow.png'></image>
-				我的关注
-				<image class='pull-right me-icon' src='../../static/images/right-angle.png'></image>
-			</navigator>
-			<navigator :url='user.uid>0?"/pages/ucenter/ucenter?tab=fans":"/pages/login/login"' class='col-12'>
-				<image class="me-icon" src='../../static/images/fans.png'></image>
-				我的粉丝
 				<image class='pull-right me-icon' src='../../static/images/right-angle.png'></image>
 			</navigator>
 		</view>
